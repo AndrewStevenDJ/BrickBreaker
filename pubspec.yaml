@@ -13,6 +13,7 @@ dependencies:
   flutter_animate: ^4.5.2
   google_fonts: ^6.2.1
   supabase_flutter: ^2.8.0
+  audioplayers: ^6.5.1
 
 dev_dependencies:
   flutter_test:
@@ -23,6 +24,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  
+  assets:
+    - assets/audio/
 
 # Flutter Launcher Icons configuration
 flutter_launcher_icons:

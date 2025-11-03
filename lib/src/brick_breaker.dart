@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 
 import 'components/components.dart';
 import 'config.dart';
+import 'services/audio_service.dart';
 
 enum PlayState { welcome, playing, gameOver, won }              // Add this enumeration
 
@@ -24,6 +25,7 @@ class BrickBreaker extends FlameGame
 
   final ValueNotifier<int> score = ValueNotifier(0);            // Add this line
   final rand = math.Random();
+  final audioService = AudioService();                          // Audio service
   double get width => size.x;
   double get height => size.y;
 
@@ -34,7 +36,15 @@ class BrickBreaker extends FlameGame
     switch (playState) {
       case PlayState.welcome:
       case PlayState.gameOver:
+        // Stop music and play game over sound
+        audioService.stopBackgroundMusic();
+        if (playState == PlayState.gameOver) {
+          audioService.playGameOverSound();
+        }
+        overlays.add(playState.name);
       case PlayState.won:
+        // Stop music when player wins
+        audioService.stopBackgroundMusic();
         overlays.add(playState.name);
       case PlayState.playing:
         overlays.remove(PlayState.welcome.name);
@@ -63,6 +73,9 @@ class BrickBreaker extends FlameGame
 
     playState = PlayState.playing;
     score.value = 0;                                            // Add this line
+    
+    // Start background music when game starts
+    audioService.playBackgroundMusic();
 
     world.add(
       Ball(
@@ -123,4 +136,10 @@ class BrickBreaker extends FlameGame
 
   @override
   Color backgroundColor() => const Color(0xfff2e8cf);          // Add this override
+  
+  @override
+  void onRemove() {
+    audioService.dispose();
+    super.onRemove();
+  }
 }
